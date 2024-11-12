@@ -1,0 +1,39 @@
+{% extends "flights/base.html" %}
+
+{% block content %}
+    <h1>Flights home</h1>
+    <table class="responsive">
+        <thead>
+            <tr>
+                <td>Date</td>
+                <td>Pilot</td>
+                <td>Aircraft</td>
+                <td>Mission</td>
+                <td>Engine on</td>
+                <td>Take off</td>
+                <td>Landing</td>
+                <td>Engine off</td>
+                <td>Ej</td>
+                <td>Ebip</td>
+                <td>Hygro</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flights %}
+            <tr> 
+                <td>{{ flight.date }}</td>
+                <td>{{ flight.pilot }}</td>
+                <td>{{ flight.aircraft }}</td>
+                <td>{{ flight.mission_type }}</td>
+                <td>{{ flight.engine_on }}</td>
+                <td>{{ flight.take_off }}</td>
+                <td>{{ flight.landing }}</td>
+                <td>{{ flight.engine_off }}</td>
+                <td>{{ flight.ej }}</td>
+                <td>{{ flight.ebip }}</td>
+                <td>{{ flight.hygro }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
