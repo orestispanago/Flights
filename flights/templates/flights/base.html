@@ -21,9 +21,21 @@
     <header>
         <nav>
             <div class="nav-wrapper blue-grey darken-1">
-                <a href="#" class="brand-logo left">Flights</a>
+                <a href="/" class="brand-logo left">Flights</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                {% if user.is_authenticated %}
+                    <li><a href="/account">{{user.username|title}}</a></li>
+                    <li><form id="logout_form" action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <a href="javascript:{}" onclick="document.getElementById('logout_form').submit(); return false;">Logout</a>
+                      </form></li>
+                {% else %}
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                {% endif %}        
+            </ul>
             </div>
-        </nav>
+          </nav>
         <div  class="container">
             {% if messages %}
             {% for message in messages %}
