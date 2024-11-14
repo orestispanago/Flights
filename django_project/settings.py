@@ -136,4 +136,6 @@ CRISPY_TEMPLATE_PACK = "materialize_css_forms"
 
 LOGIN_REDIRECT_URL = "flights-home"
 
-LOGOUT_REDIRECT_URL = "flights-home"
+LOGOUT_REDIRECT_URL = "logout"
+
+LOGIN_URL = "login"

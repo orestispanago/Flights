@@ -34,4 +34,5 @@ urlpatterns = [
         name="logout",
     ),
     path("", include("flights.urls")),
+    path("profile/", user_views.profile, name="profile"),
 ]

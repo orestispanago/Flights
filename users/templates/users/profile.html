@@ -1,0 +1,16 @@
+{% extends "flights/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+      <form class="col s12" method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Update user</legend>
+            {{ user_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn waves-effect waves-light">Update
+              </button>
+        </div>
+    </form>
+{% endblock content %}
