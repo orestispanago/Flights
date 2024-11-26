@@ -1,36 +1,32 @@
-from django.shortcuts import render
-from .models import Flight
-
-flights = [
-    {
-        "date": "01-01-2024",
-        "pilot": "pilot name",
-        "aircraft": "ab123",
-        "mission": "seed",
-        "engine_on": "12:00",
-        "take_off": "12:02",
-        "landing": "13:00",
-        "engine_off": "13:02",
-        "ej": 1,
-        "ebip": 3,
-        "hygro": 0,
-    },
-    {
-        "date": "01-01-2024",
-        "pilot": "pilot name 2",
-        "aircraft": "cd456",
-        "mission": "recon",
-        "engine_on": "14:00",
-        "take_off": "14:02",
-        "landing": "15:00",
-        "engine_off": "15:02",
-        "ej": 1,
-        "ebip": 3,
-        "hygro": 0,
-    },
-]
+from django.shortcuts import render, redirect
+from django.views.generic import ListView
+from .models import Flight, Aircraft
+from .forms import FlightCreationForm
 
 
 def home(request):
     context = {"flights": Flight.objects.all()}
     return render(request, "flights/home.html", context=context)
+
+
+def create_flight(request):
+    if request.method == "POST":
+        form = FlightCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+    context = {"form": FlightCreationForm()}
+    return render(request, "flights/flight_form.html", context=context)
+
+
+class AircraftListView(ListView):
+    model = Aircraft
+    template_name = "flights/aircraft.html"
+    context_object_name = "aircrafts"
+
+
+# class FlightListView(ListView):
+#     model = Flight
+#     template_name = "flights/home.html"
+#     context_object_name = "flights"
+#     ordering = ["-date"]

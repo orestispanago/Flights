@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<!-- <head>
     <meta charset='utf-8'>
     {% if title %}
         <title>Flights - {{ title }}</title>
@@ -9,13 +9,11 @@
         <title>Flights</title>
     {% endif %}
 
-    <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-    <!-- Compiled and minified JavaScript -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-</head>
+</head> -->
 
 <body>
     <header>
@@ -38,18 +36,18 @@
           </nav>
         <div  class="container">
             {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'success'%}
-                    <script>M.toast({html: "{{message}}", classes: 'green', displayLength:3000});</script>
-                {% elif message.tags == 'info'%}
-                    <script>M.toast({html: "{{message}}", classes: 'blue', displayLength:3000});</script>
-                {% elif message.tags == 'warning'%}
-                    <script>M.toast({html: "{{message}}", classes: 'orange', displayLength:10000});</script>
-                {% elif message.tags == 'error'%}
-                    <script>M.toast({html: "{{message}}", classes: 'red', displayLength:10000});</script>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+                {% for message in messages %}
+                    {% if message.tags == 'success'%}
+                        <script>M.toast({html: "{{message}}", classes: 'green', displayLength:3000});</script>
+                    {% elif message.tags == 'info'%}
+                        <script>M.toast({html: "{{message}}", classes: 'blue', displayLength:3000});</script>
+                    {% elif message.tags == 'warning'%}
+                        <script>M.toast({html: "{{message}}", classes: 'orange', displayLength:10000});</script>
+                    {% elif message.tags == 'error'%}
+                        <script>M.toast({html: "{{message}}", classes: 'red', displayLength:10000});</script>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             {% block content %}
             {% endblock %}
         </div>

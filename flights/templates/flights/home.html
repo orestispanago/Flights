@@ -2,6 +2,9 @@
 
 {% block content %}
     <h1>Flights home</h1>
+    {% if user.is_authenticated %}
+        <a class="waves-effect waves-light btn", href="{% url 'flight-create' %}"><i class="material-icons right">add</i>Create</a>
+    {% endif %}
     <table class="responsive">
         <thead>
             <tr>
@@ -13,9 +16,12 @@
                 <td>Take off</td>
                 <td>Landing</td>
                 <td>Engine off</td>
-                <td>Ej</td>
-                <td>Ebip</td>
-                <td>Hygro</td>
+                <td>Ej attempted</td>
+                <td>Ej fired</td>
+                <td>Ebip attempted</td>
+                <td>Bip fired</td>
+                <td>Hygro attempted</td>
+                <td>Hygro fired</td>
             </tr>
         </thead>
         <tbody>
@@ -29,9 +35,12 @@
                 <td>{{ flight.take_off }}</td>
                 <td>{{ flight.landing }}</td>
                 <td>{{ flight.engine_off }}</td>
-                <td>{{ flight.ej }}</td>
-                <td>{{ flight.ebip }}</td>
-                <td>{{ flight.hygro }}</td>
+                <td>{{ flight.ej_attempted }}</td>
+                <td>{{ flight.ej_fired }}</td>
+                <td>{{ flight.bip_attempted }}</td>
+                <td>{{ flight.bip_fired }}</td>
+                <td>{{ flight.hygro_attempted }}</td>
+                <td>{{ flight.hygro_fired }}</td>
             </tr>
             {% endfor %}
         </tbody>
