@@ -1,11 +1,11 @@
-from django.contrib.auth.models import User
-from .models import Flight, Aircraft
-from django.forms import ModelForm, ModelChoiceField, DateInput
+from .models import Flight
+from django.forms import ModelForm, DateInput
 from django import forms
 
 
 class DateInput(forms.DateInput):
     input_type = "date"
+    input_class = "datepicker"
 
 
 class TimePickerInput(forms.TimeInput):
@@ -15,13 +15,12 @@ class TimePickerInput(forms.TimeInput):
 class FlightCreationForm(ModelForm):
     class Meta:
         model = Flight
-        aircraft = ModelChoiceField(queryset=Aircraft.objects)
-        # fields = ["date", "engine_on", "take_off", "aircraft", "mission_type"]
         fields = "__all__"
+        exclude = ("pilot",)
         widgets = {
             "date": DateInput(),
             "engine_on": TimePickerInput(),
-            "take_off": TimePickerInput(),
+            "takeoff": TimePickerInput(),
             "engine_off": TimePickerInput(),
             "landing": TimePickerInput(),
         }
