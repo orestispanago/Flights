@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 
 
 class Mission(models.Model):
@@ -42,7 +44,9 @@ class Flight(models.Model):
     takeoff = models.TimeField(default=timezone.now)
     landing = models.TimeField(default=timezone.now)
     engine_off = models.TimeField(default=timezone.now)
-    ej_attempted = models.PositiveSmallIntegerField(default=0)
+    ej_attempted = models.PositiveSmallIntegerField(
+        default=0, validators=[MaxValueValidator(5)]
+    )
     ej_fired = models.PositiveSmallIntegerField(default=0)
     bip_attempted = models.PositiveSmallIntegerField(default=0)
     bip_fired = models.PositiveSmallIntegerField(default=0)
@@ -50,6 +54,10 @@ class Flight(models.Model):
     hygro_fired = models.PositiveSmallIntegerField(default=0)
     mission_type = models.ForeignKey(Mission, on_delete=models.PROTECT)
     pilot = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    def clean(self):
+        if self.engine_on > self.engine_off:
+            print("Dates are incorrect")
 
     def __str__(self):
         return f"ID: {self.pk}, Plane: {self.plane}, Takeoff: {self.date} {self.takeoff}"

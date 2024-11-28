@@ -1,12 +1,13 @@
 {% extends "flights/base.html" %}
-{% load crispy_forms_tags %}
+<!-- {% load crispy_forms_tags %} -->
+ <!-- {% load materializecss %} -->
 {% block content %}
     <div class="content-section">
         <form class="col s12" method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Flight</legend>
-                {{ form.as_p }}
+                {{ form }}
             </fieldset>
             <div class="form-group">
                 <button class="btn waves-effect waves-light">Create
