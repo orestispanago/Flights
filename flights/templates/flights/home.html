@@ -1,4 +1,5 @@
 {% extends "flights/base.html" %}
+{% load time_filters %} 
 
 {% block content %}
     <h1>Flights home</h1>
@@ -16,12 +17,13 @@
                 <td>Takeoff</td>
                 <td>Landing</td>
                 <td>Engine off</td>
-                <td>Ej attempted</td>
-                <td>Ej fired</td>
-                <td>Ebip attempted</td>
-                <td>Bip fired</td>
-                <td>Hygro attempted</td>
-                <td>Hygro fired</td>
+                <td>Air time</td>
+                <td>EJ attempted</td>
+                <td>EJ fired</td>
+                <td>BIP attempted</td>
+                <td>BIP fired</td>
+                <td>HBIP attempted</td>
+                <td>HBIP fired</td>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +37,7 @@
                 <td>{{ flight.takeoff }}</td>
                 <td>{{ flight.landing }}</td>
                 <td>{{ flight.engine_off }}</td>
+                <td>{{ flight.air_time|duration }}</td>
                 <td>{{ flight.ej_attempted }}</td>
                 <td>{{ flight.ej_fired }}</td>
                 <td>{{ flight.bip_attempted }}</td>

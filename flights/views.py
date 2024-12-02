@@ -20,28 +20,6 @@ class FlightCreationFormView(FormView):
         return super().form_invalid(form)
 
 
-# def home(request):
-#     context = {"flights": Flight.objects.all()}
-#     return render(request, "flights/home.html", context=context)
-
-
-# @login_required
-# def create_flight(request):
-#     if request.method == "POST":
-#         form = FlightCreationForm(request.POST)
-#         form.instance.pilot = request.user
-#         form.full_clean()
-#         if form.is_valid():
-#             form.save()
-#             return redirect("/")
-#         else:
-#             print("Form was not valid.........................")
-#             print(form.errors)
-#             return render(request, "flights/flight_form.html", {"form": form})
-#     context = {"form": FlightCreationForm()}
-#     return render(request, "flights/flight_form.html", context=context)
-
-
 class FlightListView(ListView):
     model = Flight
     template_name = "flights/home.html"
