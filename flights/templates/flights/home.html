@@ -12,6 +12,7 @@
                 <td>Date</td>
                 <td>Pilot</td>
                 <td>Plane</td>
+                <td>Base</td>
                 <td>Mission</td>
                 <td>Engine on</td>
                 <td>Takeoff</td>
@@ -29,14 +30,15 @@
         <tbody>
             {% for flight in flights %}
             <tr> 
-                <td>{{ flight.date }}</td>
+                <td>{{ flight.date|date:"d M Y" }}</td>
                 <td>{{ flight.pilot }}</td>
                 <td>{{ flight.plane }}</td>
+                <td>{{ flight.airport }}</td>
                 <td>{{ flight.mission_type }}</td>
-                <td>{{ flight.engine_on }}</td>
-                <td>{{ flight.takeoff }}</td>
-                <td>{{ flight.landing }}</td>
-                <td>{{ flight.engine_off }}</td>
+                <td>{{ flight.engine_on|date:"H:i" }}</td>
+                <td>{{ flight.takeoff|date:"H:i" }}</td>
+                <td>{{ flight.landing|date:"H:i" }}</td>
+                <td>{{ flight.engine_off|date:"H:i" }}</td>
                 <td>{{ flight.air_time|duration }}</td>
                 <td>{{ flight.ej_attempted }}</td>
                 <td>{{ flight.ej_fired }}</td>

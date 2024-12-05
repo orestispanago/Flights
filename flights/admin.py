@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import Flight, Plane, Mission
+from .models import Flight, Plane, Mission, Airport
 
 
 class FlightsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Flight._meta.get_fields()]
+    readonly_fields = ["air_time"]
 
 
 class PlanesAdmin(admin.ModelAdmin):
@@ -17,3 +18,4 @@ class MissionAdmin(admin.ModelAdmin):
 admin.site.register(Flight, FlightsAdmin)
 admin.site.register(Plane, PlanesAdmin)
 admin.site.register(Mission, MissionAdmin)
+admin.site.register(Airport)
