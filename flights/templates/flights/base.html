@@ -4,61 +4,73 @@
 <head>
     <meta charset='utf-8'>
     {% if title %}
-        <title>Flights - {{ title }}</title>
+    <title>Flights - {{ title }}</title>
     {% else %}
-        <title>Flights</title>
+    <title>Flights</title>
     {% endif %}
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
     <header>
-        <nav>
-            <div class="nav-wrapper blue-grey darken-1">
-                <a href="/" class="brand-logo left">Flights</a>
-              <ul id="nav-mobile" class="right hide-on-med-and-down">
-                {% if user.is_authenticated %}
-                    <li><a href="/profile">Profile</a></li>
-                    <li><form id="logout_form" action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <a href="javascript:{}" onclick="document.getElementById('logout_form').submit(); return false;">Logout</a>
-                      </form></li>
-                {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register">Register</a></li>
-                {% endif %}        
+        <div class="row">
+            <nav>
+                <div class="nav-wrapper blue-grey darken-1">
+                    <a href="/" class="brand-logo">Flights</a>
+                    <a href="/" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                    <ul class="right hide-on-med-and-down">
+                        {% if user.is_authenticated %}
+                        <li><a href="/profile">Profile</a></li>
+                        <li>
+                            <form id="logout_form" action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <a href="javascript:{}"
+                                    onclick="document.getElementById('logout_form').submit(); return false;">Logout</a>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+            <ul class="sidenav" id="mobile-demo">
+                <li><a href="/">Home</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
             </ul>
-            </div>
-          </nav>
-        <div  class="container">
+        </div>
+        <div class="container">
             {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'success'%}
-                        <script>M.toast({html: "{{message}}", classes: 'green', displayLength:3000});</script>
-                    {% elif message.tags == 'info'%}
-                        <script>M.toast({html: "{{message}}", classes: 'blue', displayLength:3000});</script>
-                    {% elif message.tags == 'warning'%}
-                        <script>M.toast({html: "{{message}}", classes: 'orange', displayLength:10000});</script>
-                    {% elif message.tags == 'error'%}
-                        <script>M.toast({html: "{{message}}", classes: 'red', displayLength:10000});</script>
-                    {% endif %}
-                {% endfor %}
+            {% for message in messages %}
+            {% if message.tags == 'success'%}
+            <script>M.toast({ html: "{{message}}", classes: 'green', displayLength: 3000 });</script>
+            {% elif message.tags == 'info'%}
+            <script>M.toast({ html: "{{message}}", classes: 'blue', displayLength: 3000 });</script>
+            {% elif message.tags == 'warning'%}
+            <script>M.toast({ html: "{{message}}", classes: 'orange', displayLength: 10000 });</script>
+            {% elif message.tags == 'error'%}
+            <script>M.toast({ html: "{{message}}", classes: 'red', displayLength: 10000 });</script>
+            {% endif %}
+            {% endfor %}
             {% endif %}
             {% block content %}
             {% endblock %}
         </div>
     </header>
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-    $(document).ready(function(){
-    $('select').formSelect();
-    $('.datepicker').datepicker({'format': 'yyyy-mm-dd'});
-    $('.timepicker').timepicker({twelveHour:false});
-    });
-    </script> -->
+        $(document).ready(function () {
+            $('select').formSelect();
+            $('.datepicker').datepicker({ 'format': 'yyyy-mm-dd' });
+            $('.timepicker').timepicker({ twelveHour: false });
+            $('.sidenav').sidenav();
+        });
+    </script>
 </body>
 
 </html>

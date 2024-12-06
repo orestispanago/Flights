@@ -1,53 +1,55 @@
 {% extends "flights/base.html" %}
-{% load time_filters %} 
+{% load time_filters %}
 
 {% block content %}
-    <h1>Flights home</h1>
-    {% if user.is_authenticated %}
-        <a class="waves-effect waves-light btn", href="{% url 'flight-create' %}"><i class="material-icons right">add</i>Create</a>
-    {% endif %}
-    <table class="responsive">
-        <thead>
-            <tr>
-                <td>Date</td>
-                <td>Pilot</td>
-                <td>Plane</td>
-                <td>Base</td>
-                <td>Mission</td>
-                <td>Engine on</td>
-                <td>Takeoff</td>
-                <td>Landing</td>
-                <td>Engine off</td>
-                <td>Air time</td>
-                <td>EJ attempted</td>
-                <td>EJ fired</td>
-                <td>BIP attempted</td>
-                <td>BIP fired</td>
-                <td>HBIP attempted</td>
-                <td>HBIP fired</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for flight in flights %}
-            <tr> 
-                <td>{{ flight.date|date:"d M Y" }}</td>
-                <td>{{ flight.pilot }}</td>
-                <td>{{ flight.plane }}</td>
-                <td>{{ flight.airport }}</td>
-                <td>{{ flight.mission_type }}</td>
-                <td>{{ flight.engine_on|date:"H:i" }}</td>
-                <td>{{ flight.takeoff|date:"H:i" }}</td>
-                <td>{{ flight.landing|date:"H:i" }}</td>
-                <td>{{ flight.engine_off|date:"H:i" }}</td>
-                <td>{{ flight.air_time|duration }}</td>
-                <td>{{ flight.ej_attempted }}</td>
-                <td>{{ flight.ej_fired }}</td>
-                <td>{{ flight.bip_attempted }}</td>
-                <td>{{ flight.bip_fired }}</td>
-                <td>{{ flight.hygro_attempted }}</td>
-                <td>{{ flight.hygro_fired }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h1>All flights</h1>
+{% if user.is_authenticated %}
+<a class="waves-effect waves-light btn" , href="{% url 'flight-create' %}"><i
+        class="material-icons right">add</i>Create</a>
+{% endif %}
+
+<table class="highlight">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Pilot</th>
+            <th>Plane</th>
+            <th>Base</th>
+            <th>Mission</th>
+            <th>Engine on</th>
+            <th>Takeoff</th>
+            <th>Landing</th>
+            <th>Engine off</th>
+            <th style="white-space: nowrap;">Air time</th>
+            <th>EJ attempted</th>
+            <th>EJ fired</th>
+            <th>BIP attempted</th>
+            <th>BIP fired</th>
+            <th>HBIP attempted</th>
+            <th>HBIP fired</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for flight in flights %}
+        <tr>
+            <td>{{ flight.date|date:"d M Y" }}</td>
+            <td>{{ flight.pilot }}</td>
+            <td>{{ flight.plane }}</td>
+            <td>{{ flight.airport }}</td>
+            <td>{{ flight.mission_type }}</td>
+            <td>{{ flight.engine_on|date:"H:i" }}</td>
+            <td>{{ flight.takeoff|date:"H:i" }}</td>
+            <td>{{ flight.landing|date:"H:i" }}</td>
+            <td>{{ flight.engine_off|date:"H:i" }}</td>
+            <td>{{ flight.air_time|duration }}</td>
+            <td>{{ flight.ej_attempted }}</td>
+            <td>{{ flight.ej_fired }}</td>
+            <td>{{ flight.bip_attempted }}</td>
+            <td>{{ flight.bip_fired }}</td>
+            <td>{{ flight.hbip_attempted }}</td>
+            <td>{{ flight.hbip_fired }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock content %}

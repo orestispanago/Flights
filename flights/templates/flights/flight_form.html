@@ -1,18 +1,31 @@
 {% extends "flights/base.html" %}
 <!-- {% load crispy_forms_tags %} -->
- <!-- {% load materializecss %} -->
+<!-- {% load materializecss %} -->
 {% block content %}
-    <div class="content-section">
-        <form class="col s12" method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Flight</legend>
-                {{ form }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn waves-effect waves-light">Create
-                  </button>
-            </div>
-        </form>
-    </div>
+
+<div class="container">
+    <h4>Create Flight</h4>
+    <form method="post" class="row">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div class="input-field col s12 m6 l3">
+            {{ field }}
+            <label>{{ field.label }}</label>
+
+            {% if field.errors %}
+            {% for error in field.errors %}
+            <span class="helper-text red-text" data-error="true">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="col s12">
+            <button type="submit" class="btn waves-effect waves-light">Submit</button>
+        </div>
+    </form>
+</div>
+
 {% endblock content %}

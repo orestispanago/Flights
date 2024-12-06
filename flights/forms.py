@@ -23,6 +23,7 @@ def calc_duration(start, end):
 
 
 class FlightCreationForm(forms.ModelForm):
+
     # ej_attempted = forms.IntegerField(initial=0, min_value=0, max_value=306)
     # ej_fired = forms.IntegerField(initial=0, min_value=0, max_value=306)
     # bip_attempted = forms.IntegerField(initial=0, min_value=0, max_value=10)

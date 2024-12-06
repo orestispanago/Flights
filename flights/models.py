@@ -57,10 +57,10 @@ class Flight(models.Model):
     takeoff = models.TimeField(default=timezone.now)
     landing = models.TimeField(default=timezone.now)
     engine_off = models.TimeField(default=timezone.now)
+    air_time = models.DurationField(default=timedelta(minutes=0))
     ej_attempted = models.PositiveSmallIntegerField(
         default=0, validators=[MaxValueValidator(306)]
     )
-    air_time = models.DurationField(default=timedelta(minutes=0))
     ej_fired = models.PositiveSmallIntegerField(default=0)
     bip_attempted = models.PositiveSmallIntegerField(default=0)
     bip_fired = models.PositiveSmallIntegerField(default=0)
@@ -115,7 +115,7 @@ class Flight(models.Model):
                 pretty_name = field_name.replace("_", " ").capitalize()
                 raise ValidationError(
                     {
-                        field_name: f"{pretty_name}' time is duplicated. Please provide distinct times."
+                        field_name: f"'{pretty_name}' time is duplicated. Please provide distinct times."
                     }
                 )
             seen.add(time)
@@ -125,4 +125,6 @@ class Flight(models.Model):
         super(Flight, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"ID: {self.pk}, Plane: {self.plane}, Takeoff: {self.date} {self.takeoff}"
+        return (
+            f"ID: {self.pk}, Plane: {self.plane}, Takeoff: {self.date} {self.takeoff}"
+        )
