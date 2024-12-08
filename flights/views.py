@@ -25,3 +25,10 @@ class FlightListView(ListView):
     template_name = "flights/home.html"
     context_object_name = "flights"
     ordering = ["-pk"]
+    paginate_by = 2
+
+
+def get_queryset(self):
+    user_info = self.request.user.info
+    self.queryset = user_info.trade_set.all()
+    return super().get_queryset()
