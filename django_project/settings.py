@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "flights.apps.FlightsConfig",
     "users.apps.UsersConfig",
     "materialize",
-    "materializecssform",
+    # "materializecssform",
     "crispy_forms",
     "crispy_forms_materialize",
     "django.contrib.admin",

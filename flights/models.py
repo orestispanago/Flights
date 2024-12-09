@@ -98,6 +98,28 @@ class Flight(models.Model):
                 {"engine_off": "'Engine Off' time must be the latest."}
             )
 
+    def clean_ej_fired(self):
+        if self.ej_fired > self.ej_attempted:
+            raise ValidationError(
+                {"ej_fired": "'EJ fired' cannot be more than 'EJ attempted'."}
+            )
+
+    def clean_bip_fired(self):
+        if self.bip_fired > self.bip_attempted:
+            raise ValidationError(
+                {
+                    "bip_fired": "'BIP fired' cannot be more than 'BIP attempted'."
+                }
+            )
+
+    def clean_hbip_fired(self):
+        if self.hbip_fired > self.hbip_attempted:
+            raise ValidationError(
+                {
+                    "hbip_fired": "'HBIP fired' cannot be more than 'HBIP attempted'."
+                }
+            )
+
     def clean(self):
         times = [self.engine_on, self.takeoff, self.landing, self.engine_off]
         sorted_times = sorted(times)
@@ -119,12 +141,13 @@ class Flight(models.Model):
                     }
                 )
             seen.add(time)
+        self.clean_ej_fired()
+        self.clean_bip_fired()
+        self.clean_hbip_fired()
 
     def save(self, *args, **kwargs):
         self.air_time = calc_duration(self.takeoff, self.landing)
         super(Flight, self).save(*args, **kwargs)
 
     def __str__(self):
-        return (
-            f"ID: {self.pk}, Plane: {self.plane}, Takeoff: {self.date} {self.takeoff}"
-        )
+        return f"ID: {self.pk}, Plane: {self.plane}, Takeoff: {self.date} {self.takeoff}"
