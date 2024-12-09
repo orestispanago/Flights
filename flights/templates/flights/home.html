@@ -2,76 +2,87 @@
 {% load time_filters %}
 
 {% block content %}
-<h3>All flights</h3>
-{% if user.is_authenticated %}
-<a class="waves-effect waves-light btn" , href="{% url 'flight-create' %}"><i
-        class="material-icons right">add</i>Create</a>
-{% endif %}
+
 <style>
     table {
         display: block;
         overflow-x: auto;
     }
 </style>
-<div class="card-panel">
-    <table class="highlight">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Pilot</th>
-                <th>Plane</th>
-                <th>Base</th>
-                <th>Mission</th>
-                <th>Engine on</th>
-                <th>Takeoff</th>
-                <th>Landing</th>
-                <th>Engine off</th>
-                <th>Air time</th>
-                <th>EJ att.</th>
-                <th>EJ fired</th>
-                <th>BIP att.</th>
-                <th>BIP fired</th>
-                <th>HBIP att.</th>
-                <th>HBIP fired</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for flight in flights %}
-            <tr>
-                <td style="white-space: nowrap;">{{ flight.date|date:"d M Y" }}</td>
-                <td>{{ flight.pilot }}</td>
-                <td>{{ flight.plane }}</td>
-                <td>{{ flight.base }}</td>
-                <td>{{ flight.mission_type }}</td>
-                <td>{{ flight.engine_on|date:"H:i" }}</td>
-                <td>{{ flight.takeoff|date:"H:i" }}</td>
-                <td>{{ flight.landing|date:"H:i" }}</td>
-                <td>{{ flight.engine_off|date:"H:i" }}</td>
-                <td style="white-space: nowrap;">{{ flight.air_time|duration }}</td>
-                <td>{{ flight.ej_attempted }}</td>
-                <td>{{ flight.ej_fired }}</td>
-                <td>{{ flight.bip_attempted }}</td>
-                <td>{{ flight.bip_fired }}</td>
-                <td>{{ flight.hbip_attempted }}</td>
-                <td>{{ flight.hbip_fired }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <ul class="pagination">
-        {% if page_obj.has_previous %}
-        <li> <a class="blue-text text-darken-2" href="?page=1">&laquo; first</a> </li>
-        <li> <a class="blue-text text-darken-2" href="?page={{ page_obj.previous_page_number }}">previous</a> </li>
+<div class="card hoverable">
+    <div class="card-content">
+        <span class="card-title">All Flights</span>
+        {% if user.is_authenticated %}
+        <!-- <div> -->
+        <a class="waves-effect waves-light btn" , href="{% url 'flight-create' %}"><i
+                class="material-icons right">add</i>Create</a>
+        <!-- </div> -->
+        <a class="waves-effect waves-light btn yellow darken-3" , href="{% url 'flight-create' %}"><i
+                class="material-icons right">file_download</i>Download</a>
+
         {% endif %}
-        <li> <a>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}. </a></li>
-        {% if page_obj.has_next %}
-        <li> <a class="blue-text text-darken-2" href="?page={{ page_obj.next_page_number }}">next</a> </li>
-        <li> <a class="blue-text text-darken-2" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a> </li>
-        {% endif %}
-    </ul>
+        <table class="highlight">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Pilot</th>
+                    <th>Plane</th>
+                    <th>Base</th>
+                    <th>Mission</th>
+                    <th>Engine on</th>
+                    <th>Takeoff</th>
+                    <th>Landing</th>
+                    <th>Engine off</th>
+                    <th>Air time</th>
+                    <th>EJ att.</th>
+                    <th>EJ fired</th>
+                    <th>BIP att.</th>
+                    <th>BIP fired</th>
+                    <th>HBIP att.</th>
+                    <th>HBIP fired</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for flight in flights %}
+                <tr>
+                    <td style="white-space: nowrap;">{{ flight.date|date:"d M Y" }}</td>
+                    <td>{{ flight.pilot }}</td>
+                    <td>{{ flight.plane }}</td>
+                    <td>{{ flight.base }}</td>
+                    <td>{{ flight.mission_type }}</td>
+                    <td>{{ flight.engine_on|date:"H:i" }}</td>
+                    <td>{{ flight.takeoff|date:"H:i" }}</td>
+                    <td>{{ flight.landing|date:"H:i" }}</td>
+                    <td>{{ flight.engine_off|date:"H:i" }}</td>
+                    <td style="white-space: nowrap;">{{ flight.air_time|duration }}</td>
+                    <td>{{ flight.ej_att }}</td>
+                    <td>{{ flight.ej_fired }}</td>
+                    <td>{{ flight.bip_att }}</td>
+                    <td>{{ flight.bip_fired }}</td>
+                    <td>{{ flight.hbip_att }}</td>
+                    <td>{{ flight.hbip_fired }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li> <a class="blue-text text-darken-2" href="?page=1">&laquo; first</a> </li>
+            <li> <a class="blue-text text-darken-2" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            </li>
+            {% endif %}
+            <li> <a>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}. </a></li>
+            {% if page_obj.has_next %}
+            <li> <a class="blue-text text-darken-2" href="?page={{ page_obj.next_page_number }}">next</a> </li>
+            <li> <a class="blue-text text-darken-2" href="?page={{ page_obj.paginator.num_pages }}">last
+                    &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
 </div>
-
-
 
 
 {% endblock content %}

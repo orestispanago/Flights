@@ -1,6 +1,7 @@
 from django.views.generic import ListView, FormView
 from .models import Flight
 from .forms import FlightCreationForm
+from django.contrib import messages
 
 
 class FlightCreationFormView(FormView):
@@ -13,6 +14,10 @@ class FlightCreationFormView(FormView):
     def form_valid(self, form):
         form.instance.pilot = self.request.user
         form.save()
+        messages.success(
+            self.request,
+            "Flight created successfully",
+        )
         return super().form_valid(form)
 
     def form_invalid(self, form):

@@ -8,7 +8,9 @@ import datetime
 def export_to_csv(modeladmin, request, queryset):
     opts = modeladmin.model._meta
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = "attachment;" f"filename={opts.verbose_name}s.csv"
+    response["Content-Disposition"] = (
+        "attachment;" f"filename={opts.verbose_name}s.csv"
+    )
     writer = csv.writer(response)
     fields = [
         field
@@ -32,7 +34,8 @@ def export_to_csv(modeladmin, request, queryset):
 
 class FlightsAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Flight._meta.get_fields()]
-    readonly_fields = ["air_time"]
+    # exclude = ["base"]
+    readonly_fields = ["air_time", "ej_dud", "bip_dud", "hbip_dud"]
     list_filter = (("date", admin.DateFieldListFilter), "plane", "base")
     actions = [export_to_csv]
 

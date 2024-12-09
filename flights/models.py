@@ -58,17 +58,26 @@ class Flight(models.Model):
     landing = models.TimeField(default=timezone.now)
     engine_off = models.TimeField(default=timezone.now)
     air_time = models.DurationField(default=timedelta(minutes=0))
-    ej_attempted = models.PositiveSmallIntegerField(
+    ej_att = models.PositiveSmallIntegerField(
         default=0, validators=[MaxValueValidator(306)]
     )
     ej_fired = models.PositiveSmallIntegerField(default=0)
-    bip_attempted = models.PositiveSmallIntegerField(default=0)
+    bip_att = models.PositiveSmallIntegerField(default=0)
     bip_fired = models.PositiveSmallIntegerField(default=0)
-    hbip_attempted = models.PositiveSmallIntegerField(default=0)
+    hbip_att = models.PositiveSmallIntegerField(default=0)
     hbip_fired = models.PositiveSmallIntegerField(default=0)
     mission_type = models.ForeignKey(Mission, on_delete=models.PROTECT)
     pilot = models.ForeignKey(User, on_delete=models.PROTECT)
-    base = models.ForeignKey(Airport, on_delete=models.PROTECT, default=1)
+    base = models.ForeignKey(
+        Airport, on_delete=models.PROTECT, related_name="base"
+    )
+    dest = models.ForeignKey(Airport, on_delete=models.PROTECT)
+    ej_mis = models.PositiveSmallIntegerField(null=True, blank=True)
+    ej_dud = models.PositiveSmallIntegerField(null=True, blank=True)
+    bip_mis = models.PositiveSmallIntegerField(null=True, blank=True)
+    bip_dud = models.PositiveSmallIntegerField(null=True, blank=True)
+    hbip_mis = models.PositiveSmallIntegerField(null=True, blank=True)
+    hbip_dud = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def clean_engine_on(self, expected):
         if self.engine_on != expected:
@@ -99,13 +108,13 @@ class Flight(models.Model):
             )
 
     def clean_ej_fired(self):
-        if self.ej_fired > self.ej_attempted:
+        if self.ej_fired > self.ej_att:
             raise ValidationError(
                 {"ej_fired": "'EJ fired' cannot be more than 'EJ attempted'."}
             )
 
     def clean_bip_fired(self):
-        if self.bip_fired > self.bip_attempted:
+        if self.bip_fired > self.bip_att:
             raise ValidationError(
                 {
                     "bip_fired": "'BIP fired' cannot be more than 'BIP attempted'."
@@ -113,7 +122,7 @@ class Flight(models.Model):
             )
 
     def clean_hbip_fired(self):
-        if self.hbip_fired > self.hbip_attempted:
+        if self.hbip_fired > self.hbip_att:
             raise ValidationError(
                 {
                     "hbip_fired": "'HBIP fired' cannot be more than 'HBIP attempted'."
