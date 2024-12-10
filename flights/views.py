@@ -2,6 +2,8 @@ from django.views.generic import ListView, FormView
 from .models import Flight
 from .forms import FlightCreationForm
 from django.contrib import messages
+from django.http import HttpResponse
+import csv
 
 
 class FlightCreationFormView(FormView):
@@ -32,8 +34,23 @@ class FlightListView(ListView):
     ordering = ["-pk"]
     paginate_by = 2
 
+    def get(self, request, *args, **kwargs):
+        if "download" in request.GET and request.GET["download"] == "csv":
+            return self.download_csv()
+        return super().get(request, *args, **kwargs)
 
-def get_queryset(self):
-    user_info = self.request.user.info
-    self.queryset = user_info.trade_set.all()
-    return super().get_queryset()
+    def download_csv(self):
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="flights.csv"'
+        writer = csv.writer(response)
+        fields = [field.name for field in self.model._meta.fields]
+        writer.writerow(fields)
+        for flight in self.model.objects.all().order_by(*self.ordering):
+            writer.writerow([getattr(flight, field) for field in fields])
+        return response
+
+
+# def get_queryset(self):
+#     user_info = self.request.user.info
+#     self.queryset = user_info.trade_set.all()
+#     return super().get_queryset()
