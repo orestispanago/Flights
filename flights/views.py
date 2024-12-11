@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.http import HttpResponse
 import csv
 
+# from .utils import send_test_email
+
 
 class FlightCreationFormView(FormView):
     form_class = FlightCreationForm
@@ -16,6 +18,23 @@ class FlightCreationFormView(FormView):
     def form_valid(self, form):
         form.instance.pilot = self.request.user
         form.save()
+
+        # message = (
+        #     f"Dear {self.request.user.username},\n\n"
+        #     f"Flight created successfully"
+        # )
+        # try:
+        #     send_test_email(message)
+        #     messages.success(
+        #         self.request,
+        #         "Flight created successfully, and an email has been sent.",
+        #     )
+        # except Exception as e:
+        #     messages.error(
+        #         self.request,
+        #         f"Flight created, but an error occurred while sending email: {e}",
+        #     )
+
         messages.success(
             self.request,
             "Flight created successfully",
@@ -32,7 +51,7 @@ class FlightListView(ListView):
     template_name = "flights/home.html"
     context_object_name = "flights"
     ordering = ["-pk"]
-    paginate_by = 2
+    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         if "download" in request.GET and request.GET["download"] == "csv":
@@ -48,9 +67,3 @@ class FlightListView(ListView):
         for flight in self.model.objects.all().order_by(*self.ordering):
             writer.writerow([getattr(flight, field) for field in fields])
         return response
-
-
-# def get_queryset(self):
-#     user_info = self.request.user.info
-#     self.queryset = user_info.trade_set.all()
-#     return super().get_queryset()
