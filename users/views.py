@@ -3,6 +3,8 @@ from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.models import User
 
 
 def register(request):
@@ -23,7 +25,11 @@ def register(request):
             return redirect("/")
     else:
         form = UserRegisterForm()
-    return render(request, "users/register.html", {"form": form})
+    context = {
+        "form": form,
+        "title": "Register",
+    }
+    return render(request, "users/register.html", context)
 
 
 @login_required
@@ -41,3 +47,18 @@ def profile(request):
         user_form = UserUpdateForm(instance=request.user)
     context = {"user_form": user_form}
     return render(request, "users/profile.html", context=context)
+
+
+class CustomPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        email = form.cleaned_data["email"]
+        if not self.is_valid_email(email):
+            messages.error(
+                self.request, "No account found with this email address."
+            )
+            return self.form_invalid(form)
+        return super().form_valid(form)
+
+    def is_valid_email(self, email):
+        """Check if the email corresponds to a registered user"""
+        return User.objects.filter(email=email).exists()

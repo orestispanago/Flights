@@ -125,10 +125,11 @@ USE_TZ = True
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = ""
 # # EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = True # for upatras
+# EMAIL_USE_SSL = True  # for upatras
 # EMAIL_PORT = 465
 # EMAIL_HOST_USER = ""
 # EMAIL_HOST_PASSWORD = ""
+# DEFAULT_FROM_EMAIL = ""
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
