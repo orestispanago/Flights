@@ -2,6 +2,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h2>You have been logged out</h2>
-    <a href="/login">Login again</a>
+
+
+<div class="valign-wrapper row login-box">
+    <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+        <div class="card-content">
+            <span class="card-title">You have been logged out</span>
+            <div class="card-action center-align">
+                <a class="waves-effect waves-light btn" href="{% url 'login' %}">Log In</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
