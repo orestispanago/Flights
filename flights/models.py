@@ -50,7 +50,87 @@ def calc_duration(start, end):
     return datetime.combine(date.min, end) - datetime.combine(date.min, start)
 
 
-class Flight(models.Model):
+def format_comparison_error(field1, relationship, field2):
+    return (
+        f"{field1.verbose_name.capitalize()}"
+        f" {relationship} "
+        f"{field2.verbose_name.capitalize()}."
+    )
+
+
+def add_error(errors, field, message):
+    if field.name not in errors:
+        errors[field.name] = message
+    else:
+        errors[field.name] += f" {message}"
+
+
+class AttemptedFiredValidatorMixin:
+    def validate_attempted_fired(self, errors, field_pairs):
+        for attempted, fired in field_pairs:
+            attempted_value = getattr(self, attempted.name)
+            fired_value = getattr(self, fired.name)
+            if fired_value > attempted_value:
+                error_msg = format_comparison_error(
+                    attempted, "cannot be less than", fired
+                )
+                add_error(errors, attempted, error_msg)
+                error_msg = format_comparison_error(
+                    fired, "must be greater than or equal to", attempted
+                )
+                add_error(errors, fired, error_msg)
+
+    def clean(self):
+        errors = {}
+        field_pairs = [
+            (self._meta.get_field("ej_att"), self._meta.get_field("ej_fired")),
+            (
+                self._meta.get_field("bip_att"),
+                self._meta.get_field("bip_fired"),
+            ),
+            (
+                self._meta.get_field("hbip_att"),
+                self._meta.get_field("hbip_fired"),
+            ),
+        ]
+
+        self.validate_attempted_fired(errors, field_pairs)
+        if errors:
+            raise ValidationError(errors)
+
+
+class TimeOrderValidatorMixin:
+    def validate_order(self, errors, fields):
+        for current, next in zip(fields, fields[1:]):
+            current_time = getattr(self, current.name)
+            next_time = getattr(self, next.name)
+            if current_time >= next_time:
+                error_msg = format_comparison_error(
+                    current, "must be earlier than", next
+                )
+                add_error(errors, current, error_msg)
+                error_msg = format_comparison_error(
+                    next, "must be later than", current
+                )
+                add_error(errors, next, error_msg)
+
+    def clean(self):
+        errors = {}
+        fields = [
+            self._meta.get_field("engine_on"),
+            self._meta.get_field("takeoff"),
+            self._meta.get_field("landing"),
+            self._meta.get_field("engine_off"),
+        ]
+
+        self.validate_order(errors, fields)
+        if errors:
+            raise ValidationError(errors)
+
+
+class Flight(
+    models.Model, TimeOrderValidatorMixin, AttemptedFiredValidatorMixin
+):
     date = models.DateField(default=timezone.now)
     plane = models.ForeignKey(Plane, on_delete=models.PROTECT)
     engine_on = models.TimeField(default=timezone.now)
@@ -79,80 +159,10 @@ class Flight(models.Model):
     hbip_mis = models.PositiveSmallIntegerField(null=True, blank=True)
     hbip_dud = models.PositiveSmallIntegerField(null=True, blank=True)
 
-    def clean_engine_on(self, expected):
-        if self.engine_on != expected:
-            raise ValidationError(
-                {"engine_on": "'Engine on' time must be the earliest."}
-            )
-
-    def clean_takeoff(self, expected):
-        if self.takeoff != expected:
-            raise ValidationError(
-                {
-                    "takeoff": "'Takeoff' time should come after 'Engine on' and before 'Landing'."
-                }
-            )
-
-    def clean_landing(self, expected):
-        if self.landing != expected:
-            raise ValidationError(
-                {
-                    "landing": "'Landing' time should come after 'Takeoff' and before 'Engine Off'."
-                }
-            )
-
-    def clean_engine_off(self, expected):
-        if self.engine_off != expected:
-            raise ValidationError(
-                {"engine_off": "'Engine Off' time must be the latest."}
-            )
-
-    def clean_ej_fired(self):
-        if self.ej_fired > self.ej_att:
-            raise ValidationError(
-                {"ej_fired": "'EJ fired' cannot be more than 'EJ attempted'."}
-            )
-
-    def clean_bip_fired(self):
-        if self.bip_fired > self.bip_att:
-            raise ValidationError(
-                {
-                    "bip_fired": "'BIP fired' cannot be more than 'BIP attempted'."
-                }
-            )
-
-    def clean_hbip_fired(self):
-        if self.hbip_fired > self.hbip_att:
-            raise ValidationError(
-                {
-                    "hbip_fired": "'HBIP fired' cannot be more than 'HBIP attempted'."
-                }
-            )
-
     def clean(self):
-        times = [self.engine_on, self.takeoff, self.landing, self.engine_off]
-        sorted_times = sorted(times)
-
-        self.clean_engine_on(sorted_times[0])
-        self.clean_takeoff(sorted_times[1])
-        self.clean_landing(sorted_times[2])
-        self.clean_engine_off(sorted_times[3])
-
-        # Check for distinct times
-        seen = set()
-        for idx, time in enumerate(times):
-            field_name = ["engine_on", "takeoff", "landing", "engine_off"][idx]
-            if time in seen:
-                pretty_name = field_name.replace("_", " ").capitalize()
-                raise ValidationError(
-                    {
-                        field_name: f"'{pretty_name}' time is duplicated. Please provide distinct times."
-                    }
-                )
-            seen.add(time)
-        self.clean_ej_fired()
-        self.clean_bip_fired()
-        self.clean_hbip_fired()
+        super().clean()
+        TimeOrderValidatorMixin.clean(self)
+        AttemptedFiredValidatorMixin.clean(self)
 
     def save(self, *args, **kwargs):
         self.air_time = calc_duration(self.takeoff, self.landing)
