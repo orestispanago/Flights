@@ -24,6 +24,7 @@
         <table class="highlight">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Date</th>
                     <th>Pilot</th>
                     <th>Plane</th>
@@ -46,6 +47,7 @@
             <tbody>
                 {% for flight in flights %}
                 <tr>
+                    <td>{{ flight.pk }}</td>
                     <td style="white-space: nowrap;">{{ flight.date|date:"d M Y" }}</td>
                     <td>{{ flight.pilot }}</td>
                     <td>{{ flight.plane }}</td>

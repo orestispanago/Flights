@@ -33,11 +33,31 @@ def export_to_csv(modeladmin, request, queryset):
 
 
 class FlightsAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Flight._meta.get_fields()]
-    # exclude = ["base"]
+    list_display = [
+        field.name
+        for field in Flight._meta.get_fields()
+        if not field.many_to_many and not field.is_relation
+    ] + ["get_targets"]
+
+    exclude = ["targets"]
     readonly_fields = ["air_time", "ej_dud", "bip_dud", "hbip_dud"]
-    list_filter = (("date", admin.DateFieldListFilter), "plane", "base")
+    list_filter = (
+        ("date", admin.DateFieldListFilter),
+        "plane",
+        "base",
+    )
     actions = [export_to_csv]
+    list_per_page = 20
+
+    def get_targets(self, obj):
+        return ", ".join([airport.name for airport in obj.targets.all()])
+
+    get_targets.short_description = "Targets"
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "targets":
+            kwargs["queryset"] = Airport.objects.filter(is_target=True)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 class PlanesAdmin(admin.ModelAdmin):
@@ -48,7 +68,11 @@ class MissionAdmin(admin.ModelAdmin):
     list_display = ["type", "description"]
 
 
+class AirportAdmin(admin.ModelAdmin):
+    list_display = ["name", "iata", "icao", "is_target"]
+
+
 admin.site.register(Flight, FlightsAdmin)
 admin.site.register(Plane, PlanesAdmin)
 admin.site.register(Mission, MissionAdmin)
-admin.site.register(Airport)
+admin.site.register(Airport, AirportAdmin)
