@@ -45,6 +45,7 @@ class FlightsAdmin(admin.ModelAdmin):
         ("date", admin.DateFieldListFilter),
         "plane",
         "base",
+        "targets",
     )
     actions = [export_to_csv]
     list_per_page = 20
