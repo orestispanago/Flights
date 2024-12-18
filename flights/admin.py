@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Flight, Plane, Mission, Airport
+from .models import Flight, Plane, Mission, Airport, Pilot, Target
 from django.http import HttpResponse
 import csv
 import datetime
@@ -33,13 +33,8 @@ def export_to_csv(modeladmin, request, queryset):
 
 
 class FlightsAdmin(admin.ModelAdmin):
-    list_display = [
-        field.name
-        for field in Flight._meta.get_fields()
-        if not field.many_to_many and not field.is_relation
-    ] + ["get_targets"]
+    list_display = [field.name for field in Flight._meta.get_fields()]
 
-    exclude = ["targets"]
     readonly_fields = ["air_time", "ej_dud", "bip_dud", "hbip_dud"]
     list_filter = (
         ("date", admin.DateFieldListFilter),
@@ -73,7 +68,13 @@ class AirportAdmin(admin.ModelAdmin):
     list_display = ["name", "iata", "icao", "is_target"]
 
 
+class PilotAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "first_name", "last_name"]
+
+
 admin.site.register(Flight, FlightsAdmin)
 admin.site.register(Plane, PlanesAdmin)
 admin.site.register(Mission, MissionAdmin)
 admin.site.register(Airport, AirportAdmin)
+admin.site.register(Pilot, PilotAdmin)
+admin.site.register(Target)

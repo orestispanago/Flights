@@ -27,6 +27,7 @@
                     <th>ID</th>
                     <th>Date</th>
                     <th>Pilot</th>
+                    <th>Co-pilot</th>
                     <th>Plane</th>
                     <th>Base</th>
                     <th>Mission</th>
@@ -50,6 +51,7 @@
                     <td>{{ flight.pk }}</td>
                     <td style="white-space: nowrap;">{{ flight.date|date:"d M Y" }}</td>
                     <td>{{ flight.pilot }}</td>
+                    <td>{{ flight.copilot }}</td>
                     <td>{{ flight.plane }}</td>
                     <td>{{ flight.base }}</td>
                     <td>{{ flight.mission_type }}</td>

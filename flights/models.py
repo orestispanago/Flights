@@ -3,7 +3,11 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from datetime import timedelta, datetime, date
-from .validators import TimeOrderValidatorMixin, AttemptedFiredValidatorMixin
+from .validators import (
+    TimeOrderValidatorMixin,
+    AttemptedFiredValidatorMixin,
+    PilotValidatorMixin,
+)
 
 
 class Mission(models.Model):
@@ -60,13 +64,31 @@ class Airport(models.Model):
         return self.name
 
 
+class Target(models.Model):
+    name = models.CharField(max_length=10, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 def calc_duration(start, end):
     """Calculates timedelta between datetime.time objects"""
     return datetime.combine(date.min, end) - datetime.combine(date.min, start)
 
 
+class Pilot(models.Model):
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return f"{self.first_name[0].upper()}. {self.last_name.upper()}"
+
+
 class Flight(
-    models.Model, TimeOrderValidatorMixin, AttemptedFiredValidatorMixin
+    models.Model,
+    TimeOrderValidatorMixin,
+    AttemptedFiredValidatorMixin,
+    PilotValidatorMixin,
 ):
     date = models.DateField(default=timezone.now)
     plane = models.ForeignKey(Plane, on_delete=models.PROTECT)
@@ -84,12 +106,27 @@ class Flight(
     hbip_att = models.PositiveSmallIntegerField(default=0)
     hbip_fired = models.PositiveSmallIntegerField(default=0)
     mission_type = models.ForeignKey(Mission, on_delete=models.PROTECT)
-    pilot = models.ForeignKey(User, on_delete=models.PROTECT)
+    pilot = models.ForeignKey(
+        Pilot,
+        on_delete=models.PROTECT,
+        related_name="flights_as_pilot",
+        null=False,
+        blank=True,
+    )
+    copilot = models.ForeignKey(
+        Pilot,
+        on_delete=models.PROTECT,
+        related_name="flights_as_copilot",
+        null=False,
+        blank=True,
+    )
     base = models.ForeignKey(
         Airport, on_delete=models.PROTECT, related_name="base"
     )
     dest = models.ForeignKey(Airport, on_delete=models.PROTECT)
-    targets = models.ManyToManyField(Airport, related_name="targets")
+    targets = models.ForeignKey(
+        Target, on_delete=models.PROTECT, null=True, blank=True
+    )
     ej_mis = models.PositiveSmallIntegerField(null=True, blank=True)
     ej_dud = models.PositiveSmallIntegerField(null=True, blank=True)
     bip_mis = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -101,6 +138,7 @@ class Flight(
         super().clean()
         TimeOrderValidatorMixin.clean(self)
         AttemptedFiredValidatorMixin.clean(self)
+        PilotValidatorMixin.validate_pilot_copilot_different(self)
 
     def save(self, *args, **kwargs):
         self.air_time = calc_duration(self.takeoff, self.landing)

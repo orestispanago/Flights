@@ -28,6 +28,11 @@ def calc_duration(start, end):
 
 
 class FlightCreationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["pilot"].required = True
+        self.fields["copilot"].required = True
+
     target_airports = forms.ModelMultipleChoiceField(
         queryset=Airport.objects.filter(is_target=True),
         widget=forms.SelectMultiple,
@@ -53,9 +58,11 @@ class FlightCreationForm(forms.ModelForm):
             "hbip_att",
             "hbip_fired",
             "mission_type",
-            # "pilot",
+            "pilot",
+            "copilot",
             "base",
             "dest",
+            "ej_mis",
         ]
         widgets = {
             "date": DatePickerInput(),

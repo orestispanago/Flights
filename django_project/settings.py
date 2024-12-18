@@ -143,8 +143,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_TEMPLATE_PACK = "materialize_css_forms"
 
-LOGIN_REDIRECT_URL = "flights-home"
+LOGIN_REDIRECT_URL = "/"
 
-LOGOUT_REDIRECT_URL = "logout"
+LOGOUT_REDIRECT_URL = "/"
 
 LOGIN_URL = "login"

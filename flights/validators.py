@@ -77,3 +77,15 @@ class TimeOrderValidatorMixin:
         self.validate_order(errors, fields)
         if errors:
             raise ValidationError(errors)
+
+
+class PilotValidatorMixin:
+    def validate_pilot_copilot_different(self):
+        if self.pilot_id == self.copilot_id:
+            error_message = "Pilot and co-pilot cannot be the same person."
+            raise ValidationError(
+                {
+                    "pilot": error_message,
+                    "copilot": error_message,
+                }
+            )

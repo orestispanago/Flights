@@ -16,7 +16,7 @@ class FlightCreationFormView(FormView):
         return "/"
 
     def form_valid(self, form):
-        form.instance.pilot = self.request.user
+        # form.instance.pilot = self.request.user
         form.save()
 
         # message = (
