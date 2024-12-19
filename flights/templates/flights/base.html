@@ -23,7 +23,7 @@
                     <a href="/" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                     <ul class="right hide-on-med-and-down">
                         {% if user.is_authenticated %}
-                        {% if user.is_superuser %}
+                        {% if user.is_staff %}
                         <li><a href="/admin">Admin</a></li>
                         {% endif %}
                         <li><a href="/profile">Profile</a></li>

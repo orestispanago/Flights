@@ -33,13 +33,6 @@ class FlightCreationForm(forms.ModelForm):
         self.fields["pilot"].required = True
         self.fields["copilot"].required = True
 
-    target_airports = forms.ModelMultipleChoiceField(
-        queryset=Airport.objects.filter(is_target=True),
-        widget=forms.SelectMultiple,
-        label="Target",
-        required=False,
-    )
-
     class Meta:
         model = Flight
 

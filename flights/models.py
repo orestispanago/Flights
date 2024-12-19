@@ -20,7 +20,7 @@ class Mission(models.Model):
 
 class Plane(models.Model):
     callsign = models.CharField(max_length=10, unique=True)
-    type = models.CharField(max_length=20, null=True)
+    type = models.CharField(max_length=20, null=True, blank=True)
 
     class Equipment(models.TextChoices):
         SEEDING = "S"
@@ -58,7 +58,6 @@ class Airport(models.Model):
         blank=True,
         verbose_name="ICAO code",
     )
-    is_target = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -123,7 +122,9 @@ class Flight(
     base = models.ForeignKey(
         Airport, on_delete=models.PROTECT, related_name="base"
     )
-    dest = models.ForeignKey(Airport, on_delete=models.PROTECT)
+    dest = models.ForeignKey(
+        Airport, on_delete=models.PROTECT, related_name="dest"
+    )
     targets = models.ForeignKey(
         Target, on_delete=models.PROTECT, null=True, blank=True
     )

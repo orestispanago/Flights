@@ -65,7 +65,7 @@ class MissionAdmin(admin.ModelAdmin):
 
 
 class AirportAdmin(admin.ModelAdmin):
-    list_display = ["name", "iata", "icao", "is_target"]
+    list_display = ["name", "iata", "icao"]
 
 
 class PilotAdmin(admin.ModelAdmin):
