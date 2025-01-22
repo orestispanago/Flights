@@ -55,7 +55,8 @@ class FlightCreationForm(forms.ModelForm):
             "copilot",
             "base",
             "dest",
-            "ej_mis",
+            # "ej_mis",
+            "targets",
         ]
         widgets = {
             "date": DatePickerInput(),

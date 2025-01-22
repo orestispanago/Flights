@@ -10,9 +10,9 @@ from .validators import (
 )
 
 
-class Mission(models.Model):
+class MissionType(models.Model):
     type = models.CharField(max_length=10, unique=True)
-    description = models.CharField(max_length=120)
+    description = models.CharField(max_length=120, null=True, blank=True)
 
     def __str__(self):
         return self.type
@@ -104,7 +104,7 @@ class Flight(
     bip_fired = models.PositiveSmallIntegerField(default=0)
     hbip_att = models.PositiveSmallIntegerField(default=0)
     hbip_fired = models.PositiveSmallIntegerField(default=0)
-    mission_type = models.ForeignKey(Mission, on_delete=models.PROTECT)
+    mission_type = models.ForeignKey(MissionType, on_delete=models.PROTECT)
     pilot = models.ForeignKey(
         Pilot,
         on_delete=models.PROTECT,
@@ -125,8 +125,8 @@ class Flight(
     dest = models.ForeignKey(
         Airport, on_delete=models.PROTECT, related_name="dest"
     )
-    targets = models.ForeignKey(
-        Target, on_delete=models.PROTECT, null=True, blank=True
+    targets = models.ManyToManyField(
+        "Target", blank=True, related_name="flights"
     )
     ej_mis = models.PositiveSmallIntegerField(null=True, blank=True)
     ej_dud = models.PositiveSmallIntegerField(null=True, blank=True)

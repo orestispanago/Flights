@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Flight, Plane, Mission, Airport, Pilot, Target
+from .models import Flight, Plane, MissionType, Airport, Pilot, Target
 from django.http import HttpResponse
 import csv
 import datetime
@@ -33,34 +33,43 @@ def export_to_csv(modeladmin, request, queryset):
 
 
 class FlightsAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Flight._meta.get_fields()]
+    list_display = [
+        field.name
+        for field in Flight._meta.get_fields()
+        if field.name != "targets"
+    ]
 
     readonly_fields = ["air_time", "ej_dud", "bip_dud", "hbip_dud"]
     list_filter = (
         ("date", admin.DateFieldListFilter),
         "plane",
         "base",
-        "targets",
+        # "targets",
     )
+    list_display = [
+        field.name
+        for field in Flight._meta.get_fields()
+        if field.name != "targets"
+    ] + ["get_targets"]
     actions = [export_to_csv]
     list_per_page = 20
 
     def get_targets(self, obj):
-        return ", ".join([airport.name for airport in obj.targets.all()])
+        return ", ".join([target.name for target in obj.targets.all()])
 
     get_targets.short_description = "Targets"
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if db_field.name == "targets":
-            kwargs["queryset"] = Airport.objects.filter(is_target=True)
-        return super().formfield_for_manytomany(db_field, request, **kwargs)
+    # def formfield_for_manytomany(self, db_field, request, **kwargs):
+    #     if db_field.name == "targets":
+    #         kwargs["queryset"] = Target.objects.filter(is_target=True)
+    #     return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 class PlanesAdmin(admin.ModelAdmin):
     list_display = ["callsign", "type", "equipment"]
 
 
-class MissionAdmin(admin.ModelAdmin):
+class MissionTypeAdmin(admin.ModelAdmin):
     list_display = ["type", "description"]
 
 
@@ -74,7 +83,7 @@ class PilotAdmin(admin.ModelAdmin):
 
 admin.site.register(Flight, FlightsAdmin)
 admin.site.register(Plane, PlanesAdmin)
-admin.site.register(Mission, MissionAdmin)
+admin.site.register(MissionType, MissionTypeAdmin)
 admin.site.register(Airport, AirportAdmin)
 admin.site.register(Pilot, PilotAdmin)
 admin.site.register(Target)
